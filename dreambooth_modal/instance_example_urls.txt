@@ -1,0 +1,9 @@
+https://raw.githubusercontent.com/Armandpl/ai_image_models/refs/heads/01_fine_tune/dreambooth_modal/imgs/0.jpeg
+https://raw.githubusercontent.com/Armandpl/ai_image_models/refs/heads/01_fine_tune/dreambooth_modal/imgs/1.jpeg
+https://raw.githubusercontent.com/Armandpl/ai_image_models/refs/heads/01_fine_tune/dreambooth_modal/imgs/2.jpeg
+https://raw.githubusercontent.com/Armandpl/ai_image_models/refs/heads/01_fine_tune/dreambooth_modal/imgs/3.jpeg
+https://raw.githubusercontent.com/Armandpl/ai_image_models/refs/heads/01_fine_tune/dreambooth_modal/imgs/4.jpeg
+https://raw.githubusercontent.com/Armandpl/ai_image_models/refs/heads/01_fine_tune/dreambooth_modal/imgs/5.jpg
+https://raw.githubusercontent.com/Armandpl/ai_image_models/refs/heads/01_fine_tune/dreambooth_modal/imgs/6.jpg
+https://raw.githubusercontent.com/Armandpl/ai_image_models/refs/heads/01_fine_tune/dreambooth_modal/imgs/7.jpeg
+https://raw.githubusercontent.com/Armandpl/ai_image_models/refs/heads/01_fine_tune/dreambooth_modal/imgs/8.jpeg
