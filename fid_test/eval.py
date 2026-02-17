@@ -1,8 +1,3 @@
-# 0. setup the inception (CNN) model
-# 1. load the images
-# 2. run them trough the model
-# 3. compute the score
-
 import random
 from pathlib import Path
 
