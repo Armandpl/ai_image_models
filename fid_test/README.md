@@ -1,0 +1,3 @@
+- why FID in feature space vs. pixel space
+- distribution metric vs. unit tests
+- the specifics of the test depend on the problem, most important is to write them and put them in the loop
