@@ -7,6 +7,7 @@ from torchvision.io import read_image
 from torchvision.models import inception_v3, Inception_V3_Weights
 from torchvision import transforms
 from torchvision.transforms import InterpolationMode
+from tqdm import tqdm
 
 from fid import compute_fid
 
@@ -26,7 +27,6 @@ class ImageDS(Dataset):
   def __len__(self):
     return len(self.image_files)
 
-
   def __getitem__(self, idx):
     img_path = Path(self.root_dir) / self.image_files[idx]
     image = read_image(str(img_path))
@@ -38,23 +38,32 @@ class ImageDS(Dataset):
 
 if __name__ == "__main__":
   ds = ImageDS('imagenet_samples')
-  # sd15 = ImageDS('generated_images/runwayml--stable-diffusion-v1-5')
-  sd15 = ImageDS('generated_images/black-forest-labs--FLUX.1-dev')
+  # test_ds = ImageDS('generated_images/runwayml--stable-diffusion-v1-5')
+  test_ds = ImageDS('generated_images/black-forest-labs--FLUX.1-dev')
 
   dl = DataLoader(ds, batch_size=32, shuffle=True)
-  dl_sd15 = DataLoader(sd15, batch_size=32, shuffle=True)
+  test_dl = DataLoader(test_ds, batch_size=32, shuffle=True)
+
+  device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
 
   model = inception_v3(weights=Inception_V3_Weights)
+  model.fc = torch.nn.Identity()
+  model.eval()
+  model.to(device)
 
-  for batch in dl:
-    print(batch.shape)
-    out_real = model(batch).logits
-    break
+  all_real = []
+  all_gen = []
 
-  for batch in dl_sd15:
-    out_gen = model(batch).logits
-    break
+  with torch.no_grad():
+    for batch in tqdm(dl):
+      all_real.append(model(batch.to(device)).cpu())
+
+    for batch in tqdm(test_dl):
+      all_gen.append(model(batch.to(device)).cpu())
+
+  out_real = torch.cat(all_real)
+  out_gen = torch.cat(all_gen)
 
   print(compute_fid(out_gen, out_real))
-  # 1799 for sd 1.5
-  # 1729 for flux
+  # 74 for sd 1.5
+  # 77 for flux
