@@ -4,7 +4,7 @@ highly recommended to watch:
 - [The spelled-out intro to neural networks and backpropagation: building micrograd](https://www.youtube.com/watch?v=VMj-3S1tku0)
 - [But how do AI images and videos actually work?](www.youtube.com/watch?v=iv-5mZ_9CPY)
 
-plan for today: implement [Flow Matching for Generative Modeling](https://arxiv.org/pdf/2210.02747)
+plan for today: implement [Back to Basics: Let Denoising Generative Models Denoise](https://arxiv.org/abs/2511.13720)
 
 ## glossary:
 - neural networks: parameterized function composed of layers of linear transformations and non-linear activations; can approximate ~any function
