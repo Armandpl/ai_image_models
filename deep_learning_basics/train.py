@@ -60,13 +60,7 @@ def sample(n=25, steps=300):
     z = torch.randn(n, 784, device=device)
     frames = []
     for i in range(steps):
-        t_cur = torch.full((n,), i / steps, device=device).clamp(1e-5, 1 - 1e-5)
-        t_next = (i + 1) / steps
-        x_pred = model(z, t_cur)
-        v_pred = (x_pred - z) / (1 - t_cur[:, None])
-        z = z + (t_next - i / steps) * v_pred
-        frame = rearrange(z.clamp(0, 1), "b (h w) -> b 1 h w", h=28, w=28)
-        frames.append(frame.cpu())
+      # TODO homework
     return frames
 
 frames = sample()
