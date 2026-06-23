@@ -1,6 +1,9 @@
 import torch
+import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from tqdm import trange
+
+from ai_image_models.models import SpriteClassifier
 
 
 def sample_t(n, device):
@@ -36,6 +39,31 @@ def sample(model, n, dim, steps=300, device="cpu", trajectory=False):
         if trajectory:
             frames.append(z.clone())
     return torch.stack(frames) if trajectory else z
+
+
+def train_classifier(dataset, epochs=5, batch_size=256, lr=1e-3, device=None):
+    device = device or (
+        "cuda" if torch.cuda.is_available()
+        else "mps" if torch.backends.mps.is_available()
+        else "cpu"
+    )
+    model = SpriteClassifier().to(device)
+    opt = torch.optim.Adam(model.parameters(), lr=lr)
+    loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+    bar = trange(epochs)
+    for epoch in bar:
+        correct = total = 0
+        for x, y in loader:
+            x, y = x.to(device), y.argmax(1).to(device)
+            logits = model(x)
+            loss = F.cross_entropy(logits, y)
+            opt.zero_grad()
+            loss.backward()
+            opt.step()
+            correct += (logits.argmax(1) == y).sum().item()
+            total += y.size(0)
+        bar.set_description(f"epoch {epoch:02d} | acc {correct / total:.4f}")
+    return model
 
 
 class Learner:
