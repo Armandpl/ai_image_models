@@ -26,3 +26,23 @@ class FlowMLP(nn.Module):
 
     def forward(self, z, t):
         return self.net(torch.cat([z, time_embed(t, self.t_dim)], dim=-1))
+
+
+class SpriteClassifier(nn.Module):
+    def __init__(self, img_shape=(16, 16, 3), n_classes=5, h=256):
+        super().__init__()
+        self.dim = math.prod(img_shape)
+        self.body = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(self.dim, h), nn.SiLU(),
+            nn.Linear(h, h), nn.SiLU(),
+        )
+        self.head = nn.Linear(h, n_classes)
+
+    def forward(self, x):
+        return self.head(self.body(x))
+
+    @torch.no_grad()
+    def features(self, x):
+        device = next(self.parameters()).device
+        return self.body(x.to(device)).cpu()
