@@ -76,7 +76,7 @@ class Learner:
         self.model = model.to(self.device)
         self.opt = torch.optim.Adam(self.model.parameters(), lr=lr)
 
-    def learn(self, dataset, epochs=50, batch_size=256):
+    def learn(self, dataset, epochs=50, batch_size=256, logger=None):
         loader = DataLoader(dataset, batch_size=batch_size, shuffle=True, drop_last=True)
         self.model.train()
         bar = trange(epochs)
@@ -89,6 +89,8 @@ class Learner:
                 loss.backward()
                 self.opt.step()
                 total += loss.item()
+                if logger:
+                  logger.log({'loss': loss.item()})
             bar.set_description(f"epoch {epoch:02d} | loss {total / len(loader):.4f}")
 
     @torch.no_grad()
