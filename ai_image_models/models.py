@@ -25,7 +25,8 @@ class FlowMLP(nn.Module):
         )
 
     def forward(self, z, t):
-        return self.net(torch.cat([z, time_embed(t, self.t_dim)], dim=-1))
+        out = self.net(torch.cat([z.flatten(1), time_embed(t, self.t_dim)], dim=-1))
+        return out.unflatten(1, self.img_shape)
 
 
 class SpriteClassifier(nn.Module):

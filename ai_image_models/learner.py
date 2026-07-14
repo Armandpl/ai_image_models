@@ -10,13 +10,17 @@ def sample_t(n, device):
     return torch.sigmoid(torch.randn(n, device=device))
 
 
+def append_dims(x, target_dims):
+    return x[(...,) + (None,) * (target_dims - x.ndim)]
+
+
 def add_noise(x, t, e):
-    t = t[:, None]
+    t = append_dims(t, x.ndim)
     return t * x + (1 - t) * e
 
 
 def velocity(x, z, t):
-    return (x - z) / (1 - t[:, None]).clamp(min=0.05)
+    return (x - z) / (1 - append_dims(t, x.ndim)).clamp(min=0.05)
 
 
 def flow_loss(model, x):
@@ -29,8 +33,8 @@ def flow_loss(model, x):
 
 
 @torch.no_grad()
-def sample(model, n, dim, steps=300, device="cpu", trajectory=False):
-    z = torch.randn(n, dim, device=device)
+def sample(model, n, img_shape, steps=300, device="cpu", trajectory=False):
+    z = torch.randn(n, *img_shape, device=device)
     dt = 1.0 / steps
     frames = []
     for i in range(steps):
@@ -83,7 +87,7 @@ class Learner:
         for epoch in bar:
             total = 0.0
             for x, _ in loader:
-                x = x.flatten(1).to(self.device)
+                x = x.to(self.device)
                 loss = flow_loss(self.model, x)
                 self.opt.zero_grad()
                 loss.backward()
@@ -96,5 +100,5 @@ class Learner:
     @torch.no_grad()
     def generate(self, n=64, steps=300, trajectory=False):
         self.model.eval()
-        out = sample(self.model, n, self.model.dim, steps, self.device, trajectory)
-        return out.reshape(*out.shape[:-1], *self.model.img_shape).clamp(0, 1).cpu()
+        out = sample(self.model, n, self.model.img_shape, steps, self.device, trajectory)
+        return out.clamp(0, 1).cpu()
