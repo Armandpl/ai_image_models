@@ -1,0 +1,11 @@
+program: train.py
+method: grid
+parameters:
+  arch:
+    values: ['mlp', 'cnn']
+  lr:
+    value: 0.0003
+  batch_size:
+    value: 256
+  epochs:
+    value: 25
